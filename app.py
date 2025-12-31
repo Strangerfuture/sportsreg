@@ -26,7 +26,8 @@ def after_request(response):
 
 @app.route("/", methods=["GET", "POST"])
 def index():
-    sports = db.execute("SELECT id, name FROM sports").rows  # your sports from DB
+    sports = ["Football", "Cricket", "Table Tennis", "Carrom Board", "Chess", "Badminton"]
+    # sports = db.execute("SELECT id, name FROM sports").rows  # your sports from DB
 
     if request.method == "POST":
         # Collect form data
