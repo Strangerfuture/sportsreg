@@ -1,0 +1,36 @@
+
+CREATE TABLE admins (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    username TEXT UNIQUE NOT NULL,
+    password_hash TEXT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE students (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    full_name TEXT NOT NULL,
+    roll_number INTEGER,
+    email TEXT NOT NULL,
+    student_id TEXT UNIQUE NOT NULL,
+    department TEXT,
+    semester INTEGER,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE sports (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT UNIQUE NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE registrations (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    student_id INTEGER NOT NULL,
+    sport_id INTEGER NOT NULL,
+    registered_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (student_id) REFERENCES students(id) ON DELETE CASCADE,
+    FOREIGN KEY (sport_id) REFERENCES sports(id) ON DELETE CASCADE,
+
+    UNIQUE(student_id, sport_id)
+);

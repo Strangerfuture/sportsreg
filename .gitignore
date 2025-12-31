@@ -1,0 +1,28 @@
+# --- Environment Variables (CRITICAL) ---
+.env
+.env.local
+.env.*
+
+# --- Python / Virtual Environments ---
+venv/
+.venv/
+env/
+bin/
+lib/
+build/
+dist/
+*.pyc
+__pycache__/
+.python-version
+
+# --- Flask / Database ---
+instance/
+*.db
+*.sqlite3
+
+# --- OS / Editors ---
+.DS_Store
+.vscode/
+.idea/
+.history/
+*.swp

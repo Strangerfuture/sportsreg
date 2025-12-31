@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Sports Registration{% endblock %}</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1e40af',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-gray-100 text-gray-800">
+
+    <!-- Header / Navbar -->
+    <header class="bg-primary text-white shadow">
+        <div class="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
+
+            <!-- Logo + Site Name -->
+            <a href="{{ url_for('index') }}" class="flex items-center space-x-2">
+                <img src="{{ url_for('static', filename='images/biratkshitiz.jpg') }}" alt="Logo"
+                    class="h-12 w-12 sm:h-16 sm:w-16 rounded-full object-cover">
+                <span class="text-lg font-semibold sm:text-xl">Birat Kshitiz College</span>
+            </a>
+
+            <!-- Optional: Placeholder for Admin/Login button -->
+            <div class="hidden sm:block">
+                <a href="#" class="text-sm bg-white text-primary px-4 py-2 rounded-md hover:bg-gray-100 transition">
+                    Admin Login
+                </a>
+            </div>
+
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-4xl mx-auto px-4 py-6">
+        <a href="{{ url_for('index') }}" class="flex  flex-col items-center justify-center space-x-2">
+            <img src="{{ url_for('static', filename='images/coderscircle.png') }}" alt="Logo"
+                class="h-12 w-12 sm:h-16 sm:w-16 rounded-full object-cover">
+            <span class="text-lg sm:text-xl">Made with <span class="text-red-500">❤️</span> by
+                CodersCircle CS Club
+            </span>
+        </a>
+        <div>
+
+            {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="py-4 text-center">
+        <p class="text-sm">
+            Made with <span class="text-red-500">❤️</span> by CodersCircle CS Club
+        </p>
+    </footer>
+
+
+</body>
+
+</html>
