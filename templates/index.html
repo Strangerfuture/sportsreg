@@ -69,15 +69,15 @@
                 <label class="flex items-center space-x-2 border rounded-md p-2 cursor-pointer hover:bg-gray-50">
                     <input type="checkbox" name="sports" value="{{ sport.id }}"
                         class="text-primary focus:ring-primary" />
-                    <span class="text-sm">{{ sport }}</span>
+                    <span class="text-sm">{{ sport.name }}</span>
                 </label>
                 {% endfor %}
             </div>
         </div>
         <!-- CloudFlair -->
-        <div class="pt-4 flex items-center justify-center">
+        <!-- <div class="pt-4 flex items-center justify-center">
             <div class="cf-turnstile" data-sitekey="{{ turnstile_site_key }}"></div>
-        </div>
+        </div> -->
 
         <!-- Submit Button -->
         <div class="pt-2">

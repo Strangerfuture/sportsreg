@@ -1,34 +1,27 @@
-import os
-from dotenv import load_dotenv # You may need to: pip install python-dotenv
-from libsql_client import create_client_sync
+import sqlite3
 
-# This loads the variables from your .env file into os.environ
-load_dotenv() 
-
-url = os.getenv("TURSO_DATABASE_URL")
-auth_token = os.getenv("TURSO_AUTH_TOKEN")
-
-# Robustness check: Ensure URL is not None before calling the client
-if url is None:
-    raise ValueError("TURSO_DATABASE_URL is not set in environment variables")
-
-
-# Initialize the sync client
-db = create_client_sync(url, auth_token=auth_token)
+def get_db():
+    conn = sqlite3.connect("sport.db")
+    conn.row_factory = sqlite3.Row
+    return conn
 
 sports_list = [
-    "Football", "Cricket", "Badminton", 
-    "Chess", "Carrom Board", "Table Tennis"
+    "Football", "Cricket", "Badminton",
+    "Chess", "Musical Chair", "Table Tennis"
 ]
+
+db = get_db()
+cursor = db.cursor()
 
 for sport in sports_list:
     try:
-        # 1. Use .execute()
-        # 2. Pass sport inside a list [sport]
-        db.execute(
+        cursor.execute(
             "INSERT INTO sports (name) VALUES (?)",
-            [sport]
+            (sport,)   # tuple is standard
         )
         print(f"Inserted: {sport}")
-    except Exception as e:
+    except sqlite3.IntegrityError as e:
         print(f"Skipped: {sport} (Reason: {e})")
+
+db.commit()
+db.close()   
