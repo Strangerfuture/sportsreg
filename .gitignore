@@ -4,6 +4,7 @@
 .env.*
 
 # --- Python / Virtual Environments ---
+flask_session
 venv/
 .venv/
 env/
