@@ -23,6 +23,7 @@ MarkupSafe==3.0.3
 msgspec==0.20.0
 multidict==6.7.0
 packaging==25.0
+pdfkit==1.0.0
 propcache==0.4.1
 Pygments==2.19.2
 python-dotenv==1.2.1

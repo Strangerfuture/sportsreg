@@ -22,13 +22,40 @@
                 placeholder="e.g. 25" />
         </div>
 
-        <!-- Email -->
-        <div>
-            <label class="block text-sm font-medium mb-1">Email</label>
-            <input type="email" name="email" required
-                class="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
-                placeholder="student@college.edu" />
+        
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <!-- Email -->
+
+            <div>
+                <label class="block text-sm font-medium mb-1">Email</label>
+                <input type="email" name="email" required
+                    class="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                    placeholder="student@college.edu" />
+            </div>
+
+            <!-- Gender-->
+
+            <div>
+                <label class="block text-sm font-medium mb-2"> Gender </label>
+
+                <div class="space-y-2 sm:grid sm:grid-cols-2 sm:gap-2 sm:space-y-0">
+                    <label class="flex items-center gap-2 border rounded-md p-2 cursor-pointer hover:bg-gray-50">
+                        <input type="radio" name="gender" value="male" required
+                            class="text-primary focus:ring-primary" />
+                        <span class="text-sm">Male</span>
+                    </label>
+
+                    <label class="flex items-center gap-2 border rounded-md p-2 cursor-pointer hover:bg-gray-50">
+                        <input type="radio" name="gender" value="female" class="text-primary focus:ring-primary" />
+                        <span class="text-sm">Female</span>
+                    </label>
+                </div>
+            </div>
         </div>
+
+
+
 
         <!-- Department + Semester -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -38,14 +65,13 @@
 
                 <div class="space-y-2 sm:grid sm:grid-cols-2 sm:gap-2 sm:space-y-0">
                     <label class="flex items-center gap-2 border rounded-md p-2 cursor-pointer hover:bg-gray-50">
-                        <input type="radio" name="department" value="csit" required
+                        <input type="radio" name="department" value="CSIT" required
                             class="text-primary focus:ring-primary" />
                         <span class="text-sm">Bsc.Csit</span>
                     </label>
 
                     <label class="flex items-center gap-2 border rounded-md p-2 cursor-pointer hover:bg-gray-50">
-                        <input type="radio" name="department" value="bca"
-                            class="text-primary focus:ring-primary" />
+                        <input type="radio" name="department" value="BCA" class="text-primary focus:ring-primary" />
                         <span class="text-sm">BCA</span>
                     </label>
                 </div>
@@ -75,9 +101,9 @@
             </div>
         </div>
         <!-- CloudFlair -->
-        <!-- <div class="pt-4 flex items-center justify-center">
+        <div class="pt-4 flex items-center justify-center">
             <div class="cf-turnstile" data-sitekey="{{ turnstile_site_key }}"></div>
-        </div> -->
+        </div>
 
         <!-- Submit Button -->
         <div class="pt-2">

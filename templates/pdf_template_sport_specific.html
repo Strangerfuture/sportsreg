@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        @page {
+            margin: 40px;
+        }
+
+        body {
+            font-family: 'Helvetica', 'Arial', sans-serif;
+            color: #333;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            margin: 0;
+            font-size: 22px;
+            text-transform: uppercase;
+        }
+
+        h3 {
+            margin: 5px 0;
+            font-size: 16px;
+        }
+
+        .powered-by {
+            margin: 0;
+            font-size: 11px;
+        }
+
+        .sport-banner {
+            background-color: #50535d;
+            color: white;
+            padding: 12px;
+            text-align: center;
+            border-radius: 4px;
+            margin: 15px 0;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background-color: #eee;
+            border: 1px solid #444;
+            padding: 10px;
+            text-align: left;
+            font-size: 11px;
+        }
+
+        td {
+            border: 1px solid #999;
+            padding: 8px;
+            font-size: 11px;
+        }
+
+        .footer {
+            position: fixed;
+            bottom: -20px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 10px;
+            border-top: 1px solid #ddd;
+            padding-top: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <h2>Birat Kshitiz Collage</h2>
+        <h3>Sport Meet - 2026</h3>
+        <p class="powered-by">Powered by CodersCircle CS Club</p>
+    </div>
+
+    <div class="sport-banner">
+        <h1>{{ selected_sport }}</h1>
+        <p style="margin: 5px 0 0; font-size: 14px;">
+            {% if selected_dept %}Dept: {{ selected_dept }} | {% endif %}
+            {% if selected_sem %}Sem: {{ selected_sem }} | {% endif %}
+            {% if selected_gender %}Gender: {{ selected_gender }} | {% endif %}
+            Total Participants: {{ students|length }}
+        </p>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th width="30">SN</th>
+                <th>Full Name</th>
+                <th>Roll Number</th>
+                <th>Gender</th>
+                <th>Department</th>
+                <th>Semester</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for student in students %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td><strong>{{ student['full_name'] }}</strong></td>
+                <td>{{ student['roll_number'] }}</td>
+                <th>{{ student['gender'] }}</th>
+                <td>{{ student['department'] }}</td>
+                <td>{{ student['semester'] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="footer">
+        Powered by CodersCircle CS Club | Generated on: {{ now.strftime('%Y-%m-%d %H:%M:%S') }}
+    </div>
+</body>
+
+</html>

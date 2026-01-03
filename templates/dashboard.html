@@ -1,0 +1,241 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="p-8 bg-gray-100 min-h-screen">
+    <h1 class="text-3xl font-bold mb-6">Admin Dashboard</h1>
+
+    <!-- Filters & PDF Form -->
+    <div class="bg-white p-6 rounded-lg shadow mb-8">
+        <h2 class="text-xl font-semibold mb-4">Filter Students Data</h2>
+        <form method="get" action="{{ url_for('export_pdf') }}" class="flex flex-wrap gap-4 items-end">
+            <div>
+                <label class="block mb-1 font-medium">Department</label>
+                <select name="department" class="border rounded px-3 py-2">
+                    <option value="">All</option>
+                    {% for dept in departments %}
+                        <option value="{{ dept }}">{{ dept }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label class="block mb-1 font-medium">Semester</label>
+                <select name="semester" class="border rounded px-3 py-2">
+                    <option value="">All</option>
+                    {% for sem in semesters %}
+                        <option value="{{ sem }}">{{ sem }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label class="block mb-1 font-medium">Sport</label>
+                <select name="sport" class="border rounded px-3 py-2">
+                    <option value="">All</option>
+                    {% for sport in sports %}
+                        <option value="{{ sport }}">{{ sport }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label class="block mb-1 font-medium">Gender</label>
+                <select name="gender" class="border rounded px-3 py-2">
+                    <option value="">All</option>
+                    {% for gender in genders %}
+                        <option value="{{ gender }}">{{ gender }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button type="submit" class="bg-blue-600 text-white px-5 py-2 rounded hover:bg-blue-700">
+                Generate PDF
+            </button>
+        </form>
+    </div>
+
+    <!-- Charts Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+        <!-- Top full-width chart -->
+        <div class="md:col-span-2 bg-white p-6 rounded-lg shadow">
+            <h2 class="text-xl font-semibold mb-4">Students per Department</h2>
+            <canvas id="studentsDeptChart"></canvas>
+        </div>
+        <!-- Bottom-left chart -->
+        <div class="bg-white p-6 rounded-lg shadow">
+            <h2 class="text-xl font-semibold mb-4">Registrations per Sport</h2>
+            <canvas id="registrationsChart"></canvas>
+        </div>
+        <!-- Bottom-right chart -->
+        <div class="bg-white p-6 rounded-lg shadow">
+            <h2 class="text-xl font-semibold mb-4">Gender Distribution</h2>
+            <canvas id="genderChart"></canvas>
+        </div>
+    </div>
+
+    <!-- Students Table -->
+    <div id="students-table-wrapper" class="bg-white p-6 rounded-lg shadow overflow-x-auto">
+        <table id="students-table" class="min-w-full">
+            <thead>
+                <tr class="bg-gray-200">
+                    <th class="px-4 py-2">Full Name</th>
+                    <th class="px-4 py-2">Roll Number</th>
+                    <th class="px-4 py-2">Gender</th>
+                    <th class="px-4 py-2">Department</th>
+                    <th class="px-4 py-2">Semester</th>
+                    <th class="px-4 py-2">Sport</th>
+                    
+                </tr>
+            </thead>
+            <tbody id="students-tbody">
+                {% for student in students %}
+                <tr>
+                    <td class="px-4 py-2">{{ student['full_name'] }}</td>
+                    <td class="px-4 py-2">{{ student['roll_number'] }}</td>
+                    <td class="px-4 py-2">{{ student['gender'] or 'N/A' }}</td>
+                    <td class="px-4 py-2">{{ student['department'] or 'N/A' }}</td>
+                    <td class="px-4 py-2">{{ student['semester'] or 'N/A' }}</td>
+                    <td class="px-4 py-2">{{ student['sport'] or 'N/A' }}</td>
+                    
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Chart.js v4+ -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+const studentsTbody = document.getElementById('students-tbody');
+const filterDept = document.querySelector('[name="department"]');
+const filterSem = document.querySelector('[name="semester"]');
+const filterSport = document.querySelector('[name="sport"]');
+const filterGender = document.querySelector('[name="gender"]');
+
+const originalRows = Array.from(studentsTbody.querySelectorAll('tr'));
+let deptChart, sportChart, genderChart;
+
+function getFilteredRows() {
+    const deptVal = filterDept.value.toLowerCase();
+    const semVal = filterSem.value.toLowerCase();
+    const sportVal = filterSport.value.toLowerCase();
+    const genderVal = filterGender.value.toLowerCase();
+
+    return originalRows.filter(row => {
+        const cells = row.querySelectorAll('td');
+        const dept = cells[3].innerText.toLowerCase();
+        const sem = cells[4].innerText.toLowerCase();
+        const sport = cells[5].innerText.toLowerCase();
+        const gender = cells[6]?.innerText.toLowerCase() || '';
+        return (deptVal === '' || dept === deptVal) &&
+               (semVal === '' || sem === semVal) &&
+               (sportVal === '' || sport === sportVal) &&
+               (genderVal === '' || gender === genderVal);
+    });
+}
+
+function updateTable() {
+    studentsTbody.innerHTML = '';
+    getFilteredRows().forEach(row => studentsTbody.appendChild(row));
+}
+
+function updateCharts() {
+    const filteredRows = getFilteredRows();
+
+    // Department counts
+    const deptCounts = {};
+    {% for dept in departments %} deptCounts["{{ dept }}"]=0; {% endfor %}
+    filteredRows.forEach(r => { const d=r.children[3].innerText; if(d in deptCounts) deptCounts[d]++; });
+    deptChart.data.datasets[0].data = Object.values(deptCounts);
+    deptChart.update();
+
+    // Sport counts
+    const sportCounts = {};
+    {% for sport in sports %} sportCounts["{{ sport }}"]=0; {% endfor %}
+    filteredRows.forEach(r => { const s=r.children[5].innerText; if(s in sportCounts) sportCounts[s]++; });
+    sportChart.data.datasets[0].data = Object.values(sportCounts);
+    sportChart.update();
+
+    // Gender counts
+    const genderCounts = {};
+    {% for gender in genders %} genderCounts["{{ gender }}"]=0; {% endfor %}
+    filteredRows.forEach(r => { const g=r.children[6].innerText; if(g in genderCounts) genderCounts[g]++; });
+    genderChart.data.datasets[0].data = Object.values(genderCounts);
+    genderChart.update();
+}
+
+function initCharts() {
+    // Students per Department (Bar)
+    const deptCtx = document.getElementById('studentsDeptChart').getContext('2d');
+    deptChart = new Chart(deptCtx, {
+        type: 'bar',
+        data: {
+            labels: {{ departments | tojson }},
+            datasets: [{
+                label: 'Number of Students',
+                data: {{ students_count | tojson }},
+                backgroundColor: 'rgba(59, 130, 246, 0.7)',
+                borderColor: 'rgba(59, 130, 246, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: false },
+                tooltip: { enabled: true }
+            },
+            scales: { y: { beginAtZero: true } }
+        }
+    });
+
+    // Registrations per Sport (Pie)
+    const sportCtx = document.getElementById('registrationsChart').getContext('2d');
+    sportChart = new Chart(sportCtx, {
+        type: 'pie',
+        data: {
+            labels: {{ sports | tojson }},
+            datasets: [{
+                label: 'Registrations',
+                data: {{ registrations_count | tojson }},
+                backgroundColor: [
+                    'rgba(59, 130, 246, 0.7)',
+                    'rgba(16, 185, 129, 0.7)',
+                    'rgba(234, 179, 8, 0.7)',
+                    'rgba(236, 72, 153, 0.7)',
+                    'rgba(249, 115, 22, 0.7)',
+                    'rgba(147, 51, 234, 0.7)'
+                ]
+            }]
+        },
+        options: { responsive: true, plugins: { legend: { position: 'top' }, tooltip: { enabled: true } } }
+    });
+
+    // Gender Distribution (Doughnut)
+    const genderCtx = document.getElementById('genderChart').getContext('2d');
+    genderChart = new Chart(genderCtx, {
+        type: 'doughnut',
+        data: {
+            labels: {{ genders | tojson }},
+            datasets: [{
+                label: 'Gender',
+                data: {{ gender_counts | tojson }},
+                backgroundColor: [
+                    'rgba(59, 130, 246, 0.7)', // Male
+                    'rgba(236, 72, 153, 0.7)', // Female
+                    'rgba(16, 185, 129, 0.7)'  // Other
+                ]
+            }]
+        },
+        options: { responsive: true, plugins: { legend: { position: 'top' }, tooltip: { enabled: true } } }
+    });
+
+    updateCharts();
+}
+
+[filterDept, filterSem, filterSport, filterGender].forEach(el => el.addEventListener('change', () => {
+    updateTable();
+    updateCharts();
+}));
+
+initCharts();
+</script>
+{% endblock %}

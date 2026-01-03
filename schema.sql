@@ -10,6 +10,7 @@ CREATE TABLE students (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     full_name TEXT NOT NULL,
     roll_number INTEGER,
+    gender TEXT NOT NULL,
     email TEXT NOT NULL,
     student_id TEXT UNIQUE NOT NULL,
     department TEXT,
